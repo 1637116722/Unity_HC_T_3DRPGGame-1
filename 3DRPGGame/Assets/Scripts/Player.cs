@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour
@@ -18,6 +19,15 @@ public class Player : MonoBehaviour
     public AudioClip soundProp;
     [Header("任務數量")]
     public Text textMission;
+    [Header("吧條")]
+    public Image barHp;
+    public Image barMp;
+    public Image barExp;
+
+    private float maxHp;
+    private float maxMp;
+    private float maxExp;
+    
 
     private int count;
 
@@ -71,6 +81,15 @@ public class Player : MonoBehaviour
     }
     #endregion
 
+    public void Hit(float damage,Transform direction)
+    {
+        hp -= damage;
+        rig.AddForce(direction.forward * 100 + direction.up * 150);
+
+        barHp.fillAmount = hp / maxHp;
+        ani.SetTrigger("受傷觸發");
+    }
+
     /// <summary>
     /// 攝影機根物件
     /// </summary>
@@ -89,7 +108,12 @@ public class Player : MonoBehaviour
 
         cam = GameObject.Find("攝影機根物件").transform;     // 遊戲物件.尋找("物件名稱") - 建議不要在 Update 內使用
 
-        npc = FindObjectOfType<NPC>();                      // 取得 NPC
+        npc = FindObjectOfType<NPC>();
+
+        maxHp = hp;
+        maxMp = mp;
+        
+        // 取得 NPC
     }
 
     /// <summary>
